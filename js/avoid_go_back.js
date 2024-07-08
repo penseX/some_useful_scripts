@@ -1,29 +1,16 @@
-// get currenet page url
-var current_url = window.location.href;
-
-// function:    1.replace previous page url with current page url
-//              2.push current page url to browser's history
-function noBack(){
-    window.history.replaceState(null, null, current_url);
-    window.history.pushState(null, null, current_url);
-}
-// call noBack funciton every 300 ms
-setInterval(function (){
-    noBack();
-    // console.log("push: " + window.location.href);
-},300);
-// call noBack function 1000 times at once
-setTimeout(function (){
-    for(var i = 0; i< 1000; i++){
-        noBack();
+    var current_url = window.location.href;
+    var max_index = 100;
+    var current_state = history.state;
+    if (!current_state) {
+        for (let i = 1; i <= max_index; i++) {
+            history.pushState({page: i}, null, current_url);
+        }
     }
-}, 0);
-// all noBack function when current page'html is laoded
-document.addEventListener("DOMContentLoaded", function (){
-    noBack();
-});
-// call noBack function if user click go-back buttion of browser
-window.addEventListener("popstate", function(e) {
-    noBack();
-    window.location.href = current_url;
-}, false);
+    console.log(current_state.page);
+    if(current_state.page !== max_index){
+        history.go(max_index);
+        history.location.href = current_url;
+    }
+    window.addEventListener('popstate', function() {
+        history.go(max_index);
+    });
